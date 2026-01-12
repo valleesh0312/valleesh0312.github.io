@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>TruthStack - Veracity Intelligence for Factoring</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    :root{--bg-dark:#0a0f1a;--bg-card:#111827;--bg-page:#f8fafc;--bg-white:#fff;--border:#e2e8f0;--border-dark:#1e293b;--green:#10b981;--green-light:#d1fae5;--green-bg:#ecfdf5;--red:#ef4444;--red-light:#fee2e2;--red-bg:#fef2f2;--orange:#f59e0b;--orange-light:#fef3c7;--orange-bg:#fffbeb;--blue:#3b82f6;--purple:#8b5cf6;--cyan:#06b6d4;--yellow-bg:#fefce8;--yellow-border:#fef08a;--text-white:#fff;--text-light:#94a3b8;--text-muted:#64748b;--text-primary:#0f172a;--text-secondary:#475569}
+    html{scroll-behavior:smooth}
+    body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.5;font-size:16px;-webkit-font-smoothing:antialiased}
+    .main-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(15,23,42,.95);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid rgba(255,255,255,.1);z-index:1000;padding:8px 16px;padding-bottom:max(8px,env(safe-area-inset-bottom))}
+    .nav-inner{display:flex;justify-content:center;gap:8px;max-width:500px;margin:0 auto}
+    .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 12px;background:0 0;border:none;border-radius:12px;color:var(--text-light);font-size:11px;font-weight:600;cursor:pointer;transition:all .2s;min-height:56px}
+    .nav-btn .nav-icon{font-size:20px}
+    .nav-btn.active{background:rgba(16,185,129,.2);color:var(--green)}
+    .nav-btn:active{transform:scale(.95)}
+    .section{display:none;min-height:100vh;padding-bottom:80px}
+    .section.active{display:block}
+    .deck-section{background:var(--bg-dark);color:var(--text-white)}
+    .slide{min-height:100vh;padding:24px 20px;display:flex;flex-direction:column;position:relative;overflow:hidden}
+    .slide::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse at 20% 20%,rgba(16,185,129,.08) 0,transparent 50%),radial-gradient(ellipse at 80% 80%,rgba(59,130,246,.06) 0,transparent 50%);pointer-events:none}
+    .slide-number{position:absolute;top:20px;right:20px;font-size:12px;font-weight:600;color:var(--text-muted);letter-spacing:2px}
+    .logo{display:flex;align-items:center;gap:10px;margin-bottom:16px;position:relative;z-index:1}
+    .logo-icon{width:32px;height:32px;position:relative}
+    .logo-icon .bar{position:absolute;left:0;height:6px;border-radius:2px}
+    .logo-icon .bar-1{bottom:0;width:26px;background:var(--blue)}
+    .logo-icon .bar-2{bottom:8px;width:26px;background:var(--green)}
+    .logo-icon .bar-3{bottom:16px;width:26px;background:var(--cyan)}
+    .logo-text{font-size:20px;font-weight:700;letter-spacing:-.5px}
+    .logo-text .truth{color:var(--text-light)}
+    .logo-text .stack{color:var(--green)}
+    .slide-1{justify-content:center;padding-top:60px}
+    .slide-1 .headline{font-size:32px;font-weight:800;line-height:1.15;margin-bottom:16px}
+    @media(min-width:768px){.slide-1 .headline{font-size:44px}}
+    .slide-1 .headline .highlight{background:linear-gradient(135deg,var(--green),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .slide-1 .subheadline{font-size:16px;color:var(--text-light);margin-bottom:32px;max-width:600px}
+    .value-props{display:flex;flex-direction:column;gap:12px;margin-bottom:32px}
+    @media(min-width:768px){.value-props{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}}
+    .value-prop{background:var(--bg-card);border:1px solid var(--border-dark);border-radius:12px;padding:16px 20px;position:relative;overflow:hidden}
+    .value-prop::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%}
+    .value-prop:nth-child(1)::before{background:var(--green)}
+    .value-prop:nth-child(2)::before{background:var(--blue)}
+    .value-prop:nth-child(3)::before{background:var(--cyan)}
+    .value-prop:nth-child(4)::before{background:var(--purple)}
+    .value-prop-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);margin-bottom:6px}
+    .value-prop-text{font-size:14px;color:var(--text-white);line-height:1.5}
+    .demo-callout{background:linear-gradient(135deg,rgba(16,185,129,.15),rgba(6,182,212,.1));border:1px solid rgba(16,185,129,.3);border-radius:12px;padding:16px 20px}
+    .demo-callout p{font-size:14px;color:var(--text-white);font-style:italic}
+    .demo-callout .icon{color:var(--green);margin-right:8px}
+    .section-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px}
+    .section-label.red{color:var(--red)}
+    .section-label.green{color:var(--green)}
+    .section-label.cyan{color:var(--cyan)}
+    .slide-2 .headline,.slide-3 .headline,.slide-4 .headline,.slide-5 .headline{font-size:28px;font-weight:700;line-height:1.2;margin-bottom:24px}
+    @media(min-width:768px){.slide-2 .headline,.slide-3 .headline,.slide-4 .headline,.slide-5 .headline{font-size:36px}}
+    .headline .highlight-red{color:var(--red)}
+    .headline .highlight-green{color:var(--green)}
+    .headline .highlight-cyan{color:var(--cyan)}
+    .gap-intro{background:var(--bg-card);border:1px solid var(--border-dark);border-radius:12px;padding:20px;margin-bottom:20px}
+    .gap-intro h3{font-size:15px;font-weight:600;color:var(--orange);margin-bottom:8px}
+    .gap-intro p{font-size:14px;color:var(--text-light);line-height:1.6}
+    .systems-diagram{display:flex;align-items:center;justify-content:center;gap:8px;padding:20px 12px;background:var(--bg-card);border-radius:12px;border:1px solid var(--border-dark);margin-bottom:24px;flex-wrap:wrap}
+    .system-node{padding:10px 14px;border-radius:8px;font-size:11px;font-weight:600;text-align:center}
+    .system-node.erp{background:rgba(59,130,246,.2);border:1px solid var(--blue);color:var(--blue)}
+    .system-node.bank{background:rgba(16,185,129,.2);border:1px solid var(--green);color:var(--green)}
+    .system-node.shipping{background:rgba(245,158,11,.2);border:1px solid var(--orange);color:var(--orange)}
+    .gap-indicator{width:40px;height:40px;border-radius:50%;background:rgba(239,68,68,.2);border:2px dashed var(--red);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--red);text-transform:uppercase;flex-shrink:0}
+    .fraud-card{background:var(--bg-card);border:1px solid var(--border-dark);border-radius:10px;padding:16px;margin-bottom:12px}
+    .fraud-card h4{font-size:14px;font-weight:600;color:var(--text-white);margin-bottom:6px;display:flex;align-items:center;gap:8px}
+    .fraud-card h4::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--red)}
+    .fraud-card p{font-size:13px;color:var(--text-light);line-height:1.5;padding-left:16px}
+    .ops-callout{background:linear-gradient(135deg,rgba(139,92,246,.15),rgba(59,130,246,.1));border:1px solid rgba(139,92,246,.3);border-radius:10px;padding:16px;margin-top:16px}
+    .ops-callout h4{font-size:12px;font-weight:600;color:var(--purple);margin-bottom:6px}
+    .ops-callout p{font-size:13px;color:var(--text-light)}
+    .ratf-framework{background:var(--bg-card);border:1px solid var(--border-dark);border-radius:12px;padding:20px;margin-bottom:20px}
+    .ratf-framework h3{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);margin-bottom:16px}
+    .ratf-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    .ratf-item{padding:14px;border-radius:8px;background:rgba(255,255,255,.02);border:1px solid var(--border-dark)}
+    .ratf-item .letter{font-size:24px;font-weight:800;margin-bottom:2px}
+    .ratf-item.recency .letter{color:var(--blue)}
+    .ratf-item.accuracy .letter{color:var(--green)}
+    .ratf-item.traceability .letter{color:var(--cyan)}
+    .ratf-item.fraud .letter{color:var(--red)}
+    .ratf-item .name{font-size:13px;font-weight:600;color:var(--text-white);margin-bottom:2px}
+    .ratf-item .desc{font-size:11px;color:var(--text-muted)}
+    .ratf-item .weight{font-size:10px;font-weight:600;color:var(--text-light);margin-top:8px;padding-top:8px;border-top:1px solid var(--border-dark)}
+    .stakeholder-card{background:var(--bg-card);border:1px solid var(--border-dark);border-radius:10px;padding:16px;margin-bottom:12px}
+    .stakeholder-card .role{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px}
+    .stakeholder-card.cro .role{color:var(--purple)}
+    .stakeholder-card.cto .role{color:var(--cyan)}
+    .stakeholder-card.scale .role{color:var(--orange)}
+    .stakeholder-card p{font-size:13px;color:var(--text-light);line-height:1.5}
+    .impl-grid{display:flex;flex-direction:column;gap:12px}
+    @media(min-width:768px){.impl-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}}
+    .impl-card{background:var(--bg-card);border:1px solid var(--border-dark);border-radius:12px;padding:20px}
+    .impl-card .impl-icon{font-size:28px;margin-bottom:12px}
+    .impl-card .audience{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);margin-bottom:6px}
+    .impl-card h3{font-size:16px;font-weight:600;color:var(--text-white);margin-bottom:8px}
+    .impl-card p{font-size:13px;color:var(--text-light);line-height:1.5;margin-bottom:12px}
+    .impl-card .tag{display:inline-block;font-size:11px;font-weight:600;padding:4px 10px;border-radius:4px;background:rgba(16,185,129,.2);color:var(--green)}
+    .slide-5{background:linear-gradient(135deg,var(--bg-dark),#0f172a)}
+    .pilot-proposal{background:var(--bg-card);border:1px solid var(--border-dark);border-radius:12px;padding:20px;margin-bottom:24px}
+    .pilot-proposal h3{font-size:18px;font-weight:600;color:var(--text-white);margin-bottom:6px}
+    .pilot-proposal .subtitle{font-size:13px;color:var(--text-light);margin-bottom:16px}
+    .kpi-box{background:linear-gradient(135deg,rgba(16,185,129,.15),rgba(6,182,212,.1));border:1px solid rgba(16,185,129,.3);border-radius:8px;padding:14px;margin-bottom:16px}
+    .kpi-box h4{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--green);margin-bottom:4px}
+    .kpi-box p{font-size:13px;color:var(--text-white)}
+    .roadmap h4{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:12px}
+    .phase{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px}
+    .phase-marker{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;background:rgba(59,130,246,.2);color:var(--blue)}
+    .phase:nth-child(3) .phase-marker{background:rgba(245,158,11,.2);color:var(--orange)}
+    .phase:nth-child(4) .phase-marker{background:rgba(16,185,129,.2);color:var(--green)}
+    .phase-content h5{font-size:14px;font-weight:600;color:var(--text-white);margin-bottom:2px}
+    .phase-content p{font-size:12px;color:var(--text-muted)}
+    .cta-box{background:linear-gradient(135deg,rgba(16,185,129,.1),rgba(59,130,246,.1));border:2px solid var(--green);border-radius:16px;padding:28px 20px;text-align:center}
+    .cta-box h3{font-size:22px;font-weight:700;color:var(--text-white);margin-bottom:12px}
+    .cta-box p{font-size:14px;color:var(--text-light);margin-bottom:20px}
+    .cta-button{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,var(--green),var(--cyan));color:var(--bg-dark);font-size:16px;font-weight:600;padding:16px 28px;border-radius:10px;text-decoration:none;border:none;cursor:pointer;min-height:52px;width:100%;max-width:300px;transition:transform .2s,box-shadow .2s}
+    .cta-button:active{transform:scale(.98)}
+    .output-section{background:var(--bg-page);color:var(--text-primary)}
+    .output-header{background:linear-gradient(135deg,#0f172a 0,#1e293b 100%);padding:16px 20px;position:sticky;top:0;z-index:100}
+    .header-badge{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);padding:4px 12px;border-radius:20px;font-size:11px;color:#94a3b8;font-weight:500}
+    .output-container{padding:20px 16px;max-width:1200px;margin:0 auto}
+    .packet-header{background:var(--bg-white);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px}
+    .packet-info h1{font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px}
+    .packet-info .app-id{font-size:20px;font-weight:700;color:var(--text-primary);margin-bottom:12px;word-break:break-all}
+    @media(min-width:768px){.packet-info .app-id{font-size:24px}}
+    .packet-meta{display:flex;flex-wrap:wrap;gap:12px 20px}
+    .meta-item{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-secondary)}
+    .verdict-box{margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
+    .verdict-label{font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+    .verdict-badge{display:inline-flex;align-items:center;gap:8px;background:var(--orange-bg);border:2px solid var(--orange);color:var(--orange);font-size:14px;font-weight:700;padding:10px 16px;border-radius:8px}
+    .verdict-subtext{font-size:12px;color:var(--text-muted);margin-top:8px}
+    .score-section{margin-bottom:16px}
+    .section-title-light{font-size:16px;font-weight:700;color:var(--text-primary);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+    .score-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    @media(min-width:768px){.score-grid{grid-template-columns:repeat(4,1fr)}}
+    .score-card{background:var(--bg-white);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center}
+    .score-card .label{font-size:9px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+    .score-card .value{font-size:28px;font-weight:800;margin-bottom:2px}
+    .score-card .value.red{color:var(--red)}
+    .score-card .value.orange{color:var(--orange)}
+    .score-card .value.green{color:var(--green)}
+    .score-card .subtext{font-size:10px;color:var(--text-muted)}
+    .score-card.overall{background:linear-gradient(135deg,var(--orange-bg) 0,#fff 100%);border-color:var(--orange-light)}
+    .tabs-container{background:var(--bg-white);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:16px}
+    .tabs-header{display:flex;border-bottom:1px solid var(--border);overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .tab-btn{flex:1;min-width:max-content;padding:14px 16px;font-size:13px;font-weight:600;color:var(--text-muted);background:0 0;border:none;cursor:pointer;position:relative;transition:color .2s;white-space:nowrap}
+    .tab-btn.active{color:var(--blue)}
+    .tab-btn.active::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:3px;background:var(--blue)}
+    .tab-btn .badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;border-radius:9px;font-size:10px;font-weight:700;margin-left:6px;background:var(--red);color:#fff}
+    .tabs-content{padding:16px}
+    .tab-panel{display:none}
+    .tab-panel.active{display:block}
+    .logic-section{margin-bottom:24px}
+    .logic-header{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+    .logic-icon{font-size:16px}
+    .logic-title{font-size:14px;font-weight:700;color:var(--text-primary);text-transform:uppercase;letter-spacing:.5px}
+    .logic-score-badge{background:var(--green-light);color:var(--green);font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px}
+    .logic-score-badge.danger{background:var(--red-light);color:var(--red)}
+    .logic-card{background:var(--bg-white);border:1px solid var(--border);border-radius:10px;margin-bottom:10px;overflow:hidden}
+    .logic-card.flagged{background:var(--yellow-bg);border-color:var(--yellow-border)}
+    .logic-card-header{padding:12px 14px;border-bottom:1px solid var(--border);background:var(--bg-page)}
+    .logic-card-title{font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:4px}
+    .flag-tag{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-family:monospace;color:var(--text-muted);background:var(--bg-white);padding:3px 8px;border-radius:4px;border:1px solid var(--border);overflow-x:auto;max-width:100%}
+    .flag-tag .arrow{color:var(--blue)}
+    .logic-card-body{padding:12px 14px}
+    .metrics-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+    .metrics-row.two-col{grid-template-columns:repeat(2,1fr)}
+    .metric-box{background:var(--bg-page);border:1px solid var(--border);border-radius:6px;padding:10px 12px}
+    .metric-label{font-size:9px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+    .metric-value{font-size:16px;font-weight:700;color:var(--text-primary)}
+    .metric-value.green{color:var(--green)}
+    .metric-value.red{color:var(--red)}
+    .check-item{border:1px solid var(--border);border-radius:10px;margin-bottom:10px;overflow:hidden}
+    .check-item.failed{border-color:var(--red-light);background:var(--red-bg)}
+    .check-item.passed{border-color:var(--green-light);background:var(--green-bg)}
+    .check-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;cursor:pointer;min-height:60px}
+    .check-header:active{background:rgba(0,0,0,.03)}
+    .check-info{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+    .check-icon{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+    .check-icon.pass{background:var(--green);color:#fff}
+    .check-icon.fail{background:var(--red);color:#fff}
+    .check-title{font-size:14px;font-weight:600;color:var(--text-primary)}
+    .check-subtitle{font-size:12px;color:var(--text-muted)}
+    .check-status{display:flex;align-items:center;gap:8px;flex-shrink:0}
+    .status-badge{font-size:10px;font-weight:700;padding:4px 10px;border-radius:4px}
+    .status-badge.passed{background:var(--green-light);color:var(--green)}
+    .status-badge.failed{background:var(--red-light);color:var(--red)}
+    .expand-icon{font-size:14px;color:var(--text-muted);transition:transform .2s}
+    .check-item.expanded .expand-icon{transform:rotate(180deg)}
+    .check-details{display:none;padding:0 16px 16px;border-top:1px solid var(--border)}
+    .check-item.expanded .check-details{display:block}
+    .evidence-summary{margin-top:12px;padding:12px 14px;background:var(--bg-page);border-radius:8px;font-size:13px;color:var(--text-secondary);line-height:1.5}
+    .evidence-summary strong{color:var(--text-primary)}
+    .signals-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px}
+    .signal-badges{display:flex;gap:6px}
+    .signal-count{padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700}
+    .signal-count.critical{background:var(--red);color:#fff}
+    .signal-count.high{background:var(--orange);color:#fff}
+    .signal-group{margin-bottom:20px}
+    .signal-group-title{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+    .signal-group-title.critical{color:var(--red)}
+    .signal-group-title.high{color:var(--orange)}
+    .signal-group-title .dot{width:8px;height:8px;border-radius:50%}
+    .signal-group-title.critical .dot{background:var(--red)}
+    .signal-group-title.high .dot{background:var(--orange)}
+    .signal-card{border:1px solid var(--border);border-radius:10px;margin-bottom:10px;overflow:hidden}
+    .signal-card.critical{border-color:var(--red-light);background:var(--red-bg)}
+    .signal-card.high{border-color:var(--orange-light);background:var(--orange-bg)}
+    .signal-header{display:flex;align-items:flex-start;justify-content:space-between;padding:14px 16px;cursor:pointer;min-height:60px}
+    .signal-header:active{background:rgba(0,0,0,.03)}
+    .signal-main{flex:1;min-width:0}
+    .signal-title-row{display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap}
+    .severity-badge{font-size:9px;font-weight:700;padding:3px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:.5px}
+    .severity-badge.critical{background:var(--red);color:#fff}
+    .severity-badge.high{background:var(--orange);color:#fff}
+    .signal-name{font-size:14px;font-weight:600;color:var(--text-primary)}
+    .signal-description{font-size:13px;color:var(--text-secondary);line-height:1.5}
+    .signal-card .check-details{border-top-color:rgba(0,0,0,.08)}
+    .signal-card.expanded .check-details{display:block}
+    .rrp-card{background:var(--bg-white);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px}
+    .rrp-card-title{font-size:15px;font-weight:700;color:var(--text-primary);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+    .rrp-info-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    @media(min-width:768px){.rrp-info-grid{grid-template-columns:repeat(4,1fr)}}
+    .rrp-info-item{padding:12px;background:var(--bg-page);border-radius:8px;border:1px solid var(--border)}
+    .rrp-info-label{font-size:9px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+    .rrp-info-value{font-size:13px;font-weight:600;color:var(--text-primary);word-break:break-all}
+    .rrp-info-value.status{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;margin-top:4px}
+    .rrp-info-value.status.current{background:var(--green-light);color:var(--green)}
+    .rrp-info-value.status.fair{background:var(--orange-light);color:var(--orange)}
+    .exec-summary{background:var(--bg-page);border-radius:8px;padding:16px;margin-top:16px}
+    .exec-summary-title{font-size:14px;font-weight:700;color:var(--text-primary);margin-bottom:4px}
+    .exec-summary-subtitle{font-size:11px;color:var(--text-muted);margin-bottom:10px}
+    .exec-summary-text{font-size:13px;color:var(--text-secondary);line-height:1.7}
+    .component-scores{margin-top:16px}
+    .component-score-item{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--border)}
+    .component-score-item:last-child{border-bottom:none}
+    .component-icon{font-size:18px;width:28px;flex-shrink:0}
+    .component-info{flex:1;min-width:0}
+    .component-name{font-size:13px;font-weight:600;color:var(--text-primary)}
+    .component-detail{font-size:11px;color:var(--text-muted);margin-top:2px}
+    .component-score{text-align:right;flex-shrink:0}
+    .component-score-value{font-size:16px;font-weight:700}
+    .component-score-value.green{color:var(--green)}
+    .component-score-value.orange{color:var(--orange)}
+    .component-grade{font-size:10px;color:var(--text-muted)}
+    .progress-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:6px}
+    .progress-fill{height:100%;border-radius:3px}
+    .progress-fill.green{background:var(--green)}
+    .progress-fill.orange{background:var(--orange)}
+    .download-card{background:linear-gradient(135deg,var(--cyan) 0,var(--blue) 100%);border:none;color:#fff;text-align:center;padding:28px 20px}
+    .download-card .download-icon{font-size:40px;margin-bottom:12px}
+    .download-card h4{font-size:20px;font-weight:700;margin-bottom:8px}
+    .download-card p{font-size:13px;opacity:.9;margin-bottom:16px}
+    .download-list{display:flex;flex-direction:column;gap:6px;align-items:center;margin-bottom:20px}
+    .download-list-item{display:flex;align-items:center;gap:8px;font-size:13px}
+    .download-btn{background:#fff;color:var(--bg-dark);border:none;padding:14px 28px;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;min-height:52px}
+    .download-btn:active{transform:scale(.98)}
+    .output-cta{background:linear-gradient(135deg,#0f172a 0,#1e293b 100%);border-radius:12px;padding:28px 20px;text-align:center;margin-top:20px}
+    .output-cta h2{font-size:20px;font-weight:700;color:#fff;margin-bottom:10px}
+    .output-cta p{font-size:14px;color:#94a3b8;margin-bottom:20px}
+    .output-cta .cta-button{width:auto;max-width:none}
+    .footer{text-align:center;padding:24px 20px;color:var(--text-muted);font-size:12px}
+    .footer a{color:var(--blue);text-decoration:none}
+    .back-to-deck{display:inline-flex;align-items:center;gap:6px;background:var(--bg-page);border:1px solid var(--border);color:var(--text-secondary);font-size:13px;font-weight:500;padding:10px 16px;border-radius:8px;margin-bottom:16px;cursor:pointer;min-height:44px}
+    .back-to-deck:active{background:var(--border)}
+  </style>
+</head>
+<body>
+  <div class="section deck-section active" id="section-deck">
+    <section class="slide slide-1">
+      <span class="slide-number">01 / 05</span>
+      <div class="logo"><div class="logo-icon"><div class="bar bar-1"></div><div class="bar bar-2"></div><div class="bar bar-3"></div></div><div class="logo-text"><span class="truth">Truth</span><span class="stack">Stack</span></div></div>
+      <h1 class="headline"><span class="highlight">Real-Time Veracity Intelligence</span> for Global Factoring</h1>
+      <p class="subheadline">The new standard for underwriting preparedness. A headless "Veracity Layer" that ensures every piece of data is Risk-Ready before it reaches your decision engine.</p>
+      <div class="value-props">
+        <div class="value-prop"><div class="value-prop-label">The Identity</div><div class="value-prop-text">A headless verification layer that sits before your LOS—ensuring data integrity at the speed of an API call.</div></div>
+        <div class="value-prop"><div class="value-prop-label">The Protocol</div><div class="value-prop-text">R-A-T-F: A universal integrity standard measuring Recency, Accuracy, Traceability, and Fraud signals.</div></div>
+        <div class="value-prop"><div class="value-prop-label">Strategic Value</div><div class="value-prop-text">We don't replace your decisioning. We harden your data inputs so capital is deployed against absolute truth.</div></div>
+        <div class="value-prop"><div class="value-prop-label">The Shift</div><div class="value-prop-text">Moving from "Data Ingestion" to "Data Integrity" without disrupting your existing infrastructure.</div></div>
+      </div>
+      <div class="demo-callout"><p><span class="icon">▶</span> "Today, we demonstrate how TruthStack functions as a high-speed, silent gatekeeper for your credit infrastructure."</p></div>
+    </section>
+    <section class="slide slide-2">
+      <span class="slide-number">02 / 05</span>
+      <div class="logo"><div class="logo-icon"><div class="bar bar-1"></div><div class="bar bar-2"></div><div class="bar bar-3"></div></div><div class="logo-text"><span class="truth">Truth</span><span class="stack">Stack</span></div></div>
+      <div class="section-label red">The Problem</div>
+      <h2 class="headline">Sophisticated Fraud Lives in the <span class="highlight-red">Gap</span> Between Disparate Data Sources</h2>
+      <div class="gap-intro"><h3>The Recon Gap</h3><p>Standard systems look at files in isolation. Fraud exists in the mismatch between an ERP invoice, a bank ledger, and the digital shipping trail.</p></div>
+      <div class="systems-diagram"><div class="system-node erp">ERP Invoice</div><div class="gap-indicator">GAP</div><div class="system-node bank">Bank Ledger</div><div class="gap-indicator">GAP</div><div class="system-node shipping">Shipping Trail</div></div>
+      <div class="fraud-card"><h4>Synthetic Receivables</h4><p>AI-generated invoices that look perfect but lack a corresponding digital footprint in the bank stream.</p></div>
+      <div class="fraud-card"><h4>Circular Invoicing</h4><p>Detecting "ghost" transactions between related parties that manual recon fails to link.</p></div>
+      <div class="fraud-card"><h4>Stale Asset Double-Financing</h4><p>Identifying invoices already leveraged elsewhere by verifying real-time "Recency" and "Traceability."</p></div>
+      <div class="ops-callout"><h4>Operations Excellence</h4><p>We elevate your Credit Ops team to High-Value Veracity Management, giving them tools to see fraud invisible to the human eye.</p></div>
+    </section>
+    <section class="slide slide-3">
+      <span class="slide-number">03 / 05</span>
+      <div class="logo"><div class="logo-icon"><div class="bar bar-1"></div><div class="bar bar-2"></div><div class="bar bar-3"></div></div><div class="logo-text"><span class="truth">Truth</span><span class="stack">Stack</span></div></div>
+      <div class="section-label green">The Engine</div>
+      <h2 class="headline">A <span class="highlight-green">Database-Driven Architecture</span> Built for Total Risk Control</h2>
+      <div class="ratf-framework"><h3>The R-A-T-F Protocol</h3><div class="ratf-grid"><div class="ratf-item recency"><div class="letter">R</div><div class="name">Recency</div><div class="desc">How fresh is this data?</div><div class="weight">35% Weight</div></div><div class="ratf-item accuracy"><div class="letter">A</div><div class="name">Accuracy</div><div class="desc">Does it reconcile across sources?</div><div class="weight">40% Weight</div></div><div class="ratf-item traceability"><div class="letter">T</div><div class="name">Traceability</div><div class="desc">Can we prove provenance?</div><div class="weight">25% Weight</div></div><div class="ratf-item fraud"><div class="letter">F</div><div class="name">Fraud Signals</div><div class="desc">Hard-stop override gates</div><div class="weight">Gate Function</div></div></div></div>
+      <div class="stakeholder-card cro"><div class="role">For the Credit Head / CRO</div><p>Our rules engine allows you to adjust risk thresholds in seconds with zero code changes.</p></div>
+      <div class="stakeholder-card cto"><div class="role">For the CTO</div><p>A robust, PostgreSQL-backed schema designed to manage complex, tenant-specific rules across multiple product verticals.</p></div>
+      <div class="stakeholder-card scale"><div class="role">Vertical Scalability</div><p>One engine that handles diverse factoring needs by toggling industry-specific rulesets at the database layer.</p></div>
+      <div class="demo-callout" style="margin-top:20px"><p><span class="icon">▶</span> "Watch our 'Accuracy Tool' flag a 'perfect' invoice that has no matching record in the live digital bank stream."</p></div>
+    </section>
+    <section class="slide slide-4">
+      <span class="slide-number">04 / 05</span>
+      <div class="logo"><div class="logo-icon"><div class="bar bar-1"></div><div class="bar bar-2"></div><div class="bar bar-3"></div></div><div class="logo-text"><span class="truth">Truth</span><span class="stack">Stack</span></div></div>
+      <div class="section-label cyan">Implementation</div>
+      <h2 class="headline"><span class="highlight-cyan">Easy Integration</span>, Zero Disruption</h2>
+      <div class="impl-grid">
+        <div class="impl-card"><div class="impl-icon">⚡</div><div class="audience">For the CTO</div><h3>Developer-Friendly API Suite</h3><p>A modern, headless API suite (FastAPI/REST) designed for easy implementation. Plug into your existing sandbox via our API Gateway in hours.</p><span class="tag">FastAPI / REST</span></div>
+        <div class="impl-card"><div class="impl-icon">🎯</div><div class="audience">For Credit Stakeholders</div><h3>No Process Disruption</h3><p>We simply enrich your upstream preparation for underwriting with high-integrity data packets. Your workflows stay intact.</p><span class="tag">Zero Migration</span></div>
+        <div class="impl-card"><div class="impl-icon">🔗</div><div class="audience">The Data Handshake</div><h3>Leverage Existing Pipes</h3><p>We connect to your existing data sources—Plaid, QuickBooks, and more. No massive migrations; no "rip and replace."</p><span class="tag">Plaid • QuickBooks • Xero</span></div>
+        <div class="impl-card"><div class="impl-icon">👁</div><div class="audience">Operational Harmony</div><h3>Invisible Integrity Check</h3><p>TruthStack acts as an invisible verification layer, delivering a Risk-Ready Packet directly into your current dashboard.</p><span class="tag">Headless Architecture</span></div>
+      </div>
+    </section>
+    <section class="slide slide-5">
+      <span class="slide-number">05 / 05</span>
+      <div class="logo"><div class="logo-icon"><div class="bar bar-1"></div><div class="bar bar-2"></div><div class="bar bar-3"></div></div><div class="logo-text"><span class="truth">Truth</span><span class="stack">Stack</span></div></div>
+      <div class="section-label green">Pilot Program</div>
+      <h2 class="headline">The 30-Day <span class="highlight-green">"Truth Audit"</span></h2>
+      <div class="pilot-proposal">
+        <h3>Low-Friction Sandbox Deployment</h3>
+        <p class="subtitle">A 30-day "Shadow Pilot" running parallel to your current intake process to identify latent "Recon Gaps" in real-time.</p>
+        <div class="kpi-box"><h4>The KPI</h4><p>Enhance Credit Ops efficiency with a clear "Veracity Score" and identify 100% of AI-generated synthetic data patterns.</p></div>
+        <div class="roadmap"><h4>The Low-Friction Roadmap</h4>
+          <div class="phase"><div class="phase-marker">1</div><div class="phase-content"><h5>Day 1-2: Setup</h5><p>Sandbox API keys issued; Rule configuration matched to your credit policy.</p></div></div>
+          <div class="phase"><div class="phase-marker">2</div><div class="phase-content"><h5>Day 3-20: Shadow Processing</h5><p>Live AR streams processed in parallel to validate the R-A-T-F protocol.</p></div></div>
+          <div class="phase"><div class="phase-marker">3</div><div class="phase-content"><h5>Day 21-30: ROI Report</h5><p>Full Veracity ROI Report delivered to CRO and CTO.</p></div></div>
+        </div>
+      </div>
+      <div class="cta-box"><h3>The Architecture is Ready</h3><p>See the R-A-T-F protocol in action with a real sample output.</p><button class="cta-button" onclick="showSection('output')">View Sample Output <span>→</span></button></div>
+    </section>
+  </div>
+  <div class="section output-section" id="section-output">
+    <header class="output-header"><div style="display:flex;align-items:center;justify-content:space-between;max-width:1200px;margin:0 auto"><div class="logo"><div class="logo-icon"><div class="bar bar-1"></div><div class="bar bar-2"></div><div class="bar bar-3"></div></div><div class="logo-text"><span class="truth">Truth</span><span class="stack">Stack</span></div></div><div class="header-badge">Sample Output</div></div></header>
+    <div class="output-container">
+      <button class="back-to-deck" onclick="showSection('deck')">← Back to Overview</button>
+      <div class="packet-header">
+        <div class="packet-info"><h1>Risk-Ready Packet</h1><div class="app-id">APP-2026-0112085742</div><div class="packet-meta"><div class="meta-item"><span>📅</span><span>Jan 12, 2026</span></div><div class="meta-item"><span>🔗</span><span>QuickBooks + Plaid</span></div></div></div>
+        <div class="verdict-box"><div class="verdict-label">Risk Verdict</div><div class="verdict-badge"><span>⚠️</span><span>REVIEW REQUIRED</span></div><div class="verdict-subtext">Manual review recommended</div></div>
+      </div>
+      <div class="score-section"><div class="section-title-light"><span>📊</span>Data Quality Overview</div><div class="score-grid"><div class="score-card overall"><div class="label">Overall DQS</div><div class="value orange">68.50</div><div class="subtext">Normalised</div></div><div class="score-card"><div class="label">Recency</div><div class="value green">100.00</div><div class="subtext">Score: 1.00</div></div><div class="score-card"><div class="label">Accuracy</div><div class="value red">40.00</div><div class="subtext">Score: 0.40</div></div><div class="score-card"><div class="label">Traceability</div><div class="value green">100.00</div><div class="subtext">Score: 1.00</div></div></div></div>
+      <div class="tabs-container">
+        <div class="tabs-header"><button class="tab-btn active" onclick="switchTab('dataquality')">Data Quality</button><button class="tab-btn" onclick="switchTab('signals')">Fraud Signals <span class="badge">3</span></button><button class="tab-btn" onclick="switchTab('rrp')">Risk-Ready Packet</button></div>
+        <div class="tabs-content">
+          <div class="tab-panel active" id="tab-dataquality">
+            <div class="logic-section"><div class="logic-header"><span class="logic-icon">⏱️</span><span class="logic-title">Recency Logic</span><span class="logic-score-badge">Score: 1.00</span></div>
+              <div class="logic-card"><div class="logic-card-header"><div class="logic-card-title">3.1.1 Data Freshness Score</div><div class="flag-tag"><span class="arrow">→</span> FLAG: DATA_FRESHNESS_SCORE (0.35)</div></div><div class="logic-card-body"><div class="metrics-row"><div class="metric-box"><div class="metric-label">Last Sync</div><div class="metric-value green">4d ago</div></div><div class="metric-box"><div class="metric-label">Freshness</div><div class="metric-value green">4d ago</div></div><div class="metric-box"><div class="metric-label">Score</div><div class="metric-value green">0.35</div></div></div></div></div>
+              <div class="logic-card"><div class="logic-card-header"><div class="logic-card-title">3.1.2 Invoice-to-Cash Timing Drift</div><div class="flag-tag"><span class="arrow">→</span> FLAG: PAYMENT_TIMING_DETERIORATION</div></div><div class="logic-card-body"><div class="metrics-row"><div class="metric-box"><div class="metric-label">Historical Avg</div><div class="metric-value">28 days</div></div><div class="metric-box"><div class="metric-label">Current Lag</div><div class="metric-value">26 days</div></div><div class="metric-box"><div class="metric-label">Drift Status</div><div class="metric-value green">Normal</div></div></div></div></div>
+            </div>
+            <div class="logic-section"><div class="logic-header"><span class="logic-icon">🎯</span><span class="logic-title">Accuracy Logic</span><span class="logic-score-badge danger">Score: 0.40</span></div>
+              <div class="logic-card flagged"><div class="logic-card-header"><div class="logic-card-title">3.2.1 Invoice ↔ AR Reconciliation</div><div class="flag-tag"><span class="arrow">→</span> FLAG: AR_RECONCILIATION_BREAK</div></div><div class="logic-card-body"><div class="metrics-row"><div class="metric-box"><div class="metric-label">Open Invoices</div><div class="metric-value">$1,964.1</div></div><div class="metric-box"><div class="metric-label">AR Balance</div><div class="metric-value">$0</div></div><div class="metric-box"><div class="metric-label">Variance</div><div class="metric-value red">$1,964.1</div></div></div></div></div>
+              <div class="logic-card flagged"><div class="logic-card-header"><div class="logic-card-title">3.2.2 Accounting ↔ Banking Reconciliation</div><div class="flag-tag"><span class="arrow">→</span> FLAG: CASH_MISMATCH</div></div><div class="logic-card-body"><div class="metrics-row"><div class="metric-box"><div class="metric-label">Bank Deposits</div><div class="metric-value">$0</div></div><div class="metric-box"><div class="metric-label">Invoice Payments</div><div class="metric-value">$8,185.04</div></div><div class="metric-box"><div class="metric-label">Match Rate</div><div class="metric-value red">200.00%</div></div></div></div></div>
+              <div class="logic-card flagged"><div class="logic-card-header"><div class="logic-card-title">3.2.3 Duplicate Invoice Detection</div><div class="flag-tag"><span class="arrow">→</span> FLAG: DUPLICATE_INVOICE_RISK</div></div><div class="logic-card-body"><div class="metrics-row two-col"><div class="metric-box"><div class="metric-label">Total Invoices</div><div class="metric-value">1</div></div><div class="metric-box"><div class="metric-label">Duplicates Found</div><div class="metric-value green">3</div></div></div></div></div>
+            </div>
+            <div class="logic-section"><div class="logic-header"><span class="logic-icon">🔍</span><span class="logic-title">Traceability Logic</span><span class="logic-score-badge">Score: 1.00</span></div>
+              <div class="logic-card"><div class="logic-card-header"><div class="logic-card-title">3.3.1 Source Confidence</div><div class="flag-tag">API → 1.00 | System → 0.75 | Manual → 0.45</div></div><div class="logic-card-body"><div class="metrics-row"><div class="metric-box"><div class="metric-label">API-Sourced</div><div class="metric-value green">94%</div></div><div class="metric-box"><div class="metric-label">System-Imported</div><div class="metric-value">4%</div></div><div class="metric-box"><div class="metric-label">Manual Entry</div><div class="metric-value">2%</div></div></div></div></div>
+              <div class="logic-card"><div class="logic-card-header"><div class="logic-card-title">3.3.2 Post-Issuance Edits</div><div class="flag-tag"><span class="arrow">→</span> FLAG: DATA_MANIPULATION_RISK</div></div><div class="logic-card-body"><div class="metrics-row two-col"><div class="metric-box"><div class="metric-label">Edited Invoices</div><div class="metric-value">24</div></div><div class="metric-box"><div class="metric-label">Suspicious Edits</div><div class="metric-value green">0</div></div></div></div></div>
+            </div>
+          </div>
+          <div class="tab-panel" id="tab-signals">
+            <div style="margin-bottom:20px">
+              <div class="check-item passed"><div class="check-header" onclick="toggleCheck(this)"><div class="check-info"><div class="check-icon pass">✓</div><div><div class="check-title">Circular / Round-Tripping Detection</div><div class="check-subtitle">Detects suspicious cash flow patterns</div></div></div><div class="check-status"><span class="status-badge passed">PASSED</span><span class="expand-icon">▼</span></div></div><div class="check-details"><div class="evidence-summary"><strong>✅ Result:</strong> No circular cash flow patterns detected. Transactions follow expected business patterns.</div></div></div>
+              <div class="check-item passed"><div class="check-header" onclick="toggleCheck(this)"><div class="check-info"><div class="check-icon pass">✓</div><div><div class="check-title">Payment Timing Analysis</div><div class="check-subtitle">Monitors for deteriorating payment patterns</div></div></div><div class="check-status"><span class="status-badge passed">PASSED</span><span class="expand-icon">▼</span></div></div><div class="check-details"><div class="evidence-summary"><strong>✅ Result:</strong> Payment timing is within normal parameters. Current lag (26 days) is consistent with historical average (28 days).</div></div></div>
+            </div>
+            <div class="signals-header"><div class="section-title-light" style="margin-bottom:0"><span>🚨</span>Behavioral Signals</div><div class="signal-badges"><span class="signal-count critical">2 CRITICAL</span><span class="signal-count high">1 HIGH</span></div></div>
+            <div class="signal-group"><div class="signal-group-title critical"><span class="dot"></span>Critical Signals</div>
+              <div class="signal-card critical"><div class="signal-header" onclick="toggleCheck(this)"><div class="signal-main"><div class="signal-title-row"><span class="severity-badge critical">Critical</span><span class="signal-name">Potential Duplicate Invoice</span></div><div class="signal-description">Invoice #1017 and #1018 have identical amount ($80.00) to Sushi by Katsuyuki, 7 days apart. Classic double-financing attempt.</div></div><div style="flex-shrink:0"><span class="expand-icon">▼</span></div></div><div class="check-details"><div class="evidence-summary"><strong>⚠️ View Evidence (7 items):</strong> Multiple invoices with matching amounts to the same buyer within a short timeframe.</div></div></div>
+              <div class="signal-card critical"><div class="signal-header" onclick="toggleCheck(this)"><div class="signal-main"><div class="signal-title-row"><span class="severity-badge critical">Critical</span><span class="signal-name">Potential Duplicate Invoice</span></div><div class="signal-description">Classic double-financing attempt</div></div><div style="flex-shrink:0"><span class="expand-icon">▼</span></div></div><div class="check-details"><div class="evidence-summary"><strong>⚠️ View Evidence (1 items):</strong> Additional duplicate invoice pattern detected requiring manual verification.</div></div></div>
+            </div>
+            <div class="signal-group"><div class="signal-group-title high"><span class="dot"></span>High Signals</div>
+              <div class="signal-card high"><div class="signal-header" onclick="toggleCheck(this)"><div class="signal-main"><div class="signal-title-row"><span class="severity-badge high">High</span><span class="signal-name">Thin File</span></div><div class="signal-description">Books are only 0.1 months old (< 6 month threshold). Are these books newly created just to raise capital?</div></div><div style="flex-shrink:0"><span class="expand-icon">▼</span></div></div><div class="check-details"><div class="evidence-summary"><strong>⚠️ View Evidence (4 items):</strong> Newly created accounting records may indicate the business was established primarily to obtain financing.</div></div></div>
+            </div>
+          </div>
+          <div class="tab-panel" id="tab-rrp">
+            <div class="rrp-card"><div class="rrp-card-title"><span>📋</span>Packet Information</div><div class="rrp-info-grid"><div class="rrp-info-item"><div class="rrp-info-label">📅 Analysis Date</div><div class="rrp-info-value">Jan 12, 2026</div><div class="rrp-info-value status current">CURRENT</div></div><div class="rrp-info-item"><div class="rrp-info-label">📊 Data Quality</div><div class="rrp-info-value">76%</div><div class="rrp-info-value status fair">FAIR</div></div><div class="rrp-info-item"><div class="rrp-info-label">🆔 Application</div><div class="rrp-info-value">APP-2026-0112</div></div><div class="rrp-info-item"><div class="rrp-info-label">👤 Assigned To</div><div class="rrp-info-value">J. Davis</div></div></div>
+              <div class="exec-summary"><div class="exec-summary-title">Executive Summary</div><div class="exec-summary-subtitle">AI-powered comprehensive risk assessment</div><div class="exec-summary-text">The applicant presents a strong credit profile with excellent payment history and robust financial metrics. The company demonstrates consistent revenue growth, healthy liquidity ratios, and a well-diversified buyer base.<br><br>The applicant maintains a current ratio of 286.59x, indicating strong short-term liquidity. Payment performance is exceptional, with 99.3% on-time payment rate across all buyers.<br><br><strong>Recommendation:</strong> Based on our comprehensive analysis, we recommend approval with a credit limit appropriate for the applicant's profile. Valid for 30 days.</div></div>
+            </div>
+            <div class="rrp-card"><div class="rrp-card-title"><span>📈</span>Component Scores</div>
+              <div class="component-scores">
+                <div class="component-score-item"><div class="component-icon">🔍</div><div class="component-info"><div class="component-name">Data Quality</div><div class="component-detail">2 invoice(s) with suspicious timing patterns</div><div class="progress-bar"><div class="progress-fill orange" style="width:75.5%"></div></div></div><div class="component-score"><div class="component-score-value orange">75.5/100</div><div class="component-grade">Grade C+</div></div></div>
+                <div class="component-score-item"><div class="component-icon">💰</div><div class="component-info"><div class="component-name">Financial Health</div><div class="component-detail">Unknown Flag</div><div class="progress-bar"><div class="progress-fill orange" style="width:70%"></div></div></div><div class="component-score"><div class="component-score-value orange">70/100</div><div class="component-grade">Grade B</div></div></div>
+                <div class="component-score-item"><div class="component-icon">👥</div><div class="component-info"><div class="component-name">Buyer Intelligence</div><div class="component-detail">26 buyers, moderate concentration risk</div><div class="progress-bar"><div class="progress-fill green" style="width:99%"></div></div></div><div class="component-score"><div class="component-score-value green">99/100</div><div class="component-grade">Grade A</div></div></div>
+                <div class="component-score-item"><div class="component-icon">🔮</div><div class="component-info"><div class="component-name">Buyer Prediction</div><div class="component-detail">Stable payment outlook, low volatility</div><div class="progress-bar"><div class="progress-fill green" style="width:99%"></div></div></div><div class="component-score"><div class="component-score-value green">99/100</div><div class="component-grade">Grade A</div></div></div>
+              </div>
+            </div>
+            <div class="rrp-card download-card"><div class="download-icon">📦</div><h4>Complete Risk-Ready Packet</h4><p>Download all artifacts in one ZIP file:</p><div class="download-list"><div class="download-list-item"><span>📄</span> PDF Report</div><div class="download-list-item"><span>📊</span> Excel Workbook</div><div class="download-list-item"><span>{ }</span> JSON Data</div><div class="download-list-item"><span>📝</span> README.txt</div></div><button class="download-btn">🚀 Download All (ZIP)</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="output-cta"><h2>This is what TruthStack catches.</h2><p>Automated cross-ledger validation that sees fraud hiding in the gaps between your data sources.</p><a href="mailto:hello@truthstack.io?subject=TruthStack%20Pilot%20Interest" class="cta-button">Schedule a Conversation →</a></div>
+    </div>
+    <div class="footer"><p>Sample output from TruthStack's Risk-Ready Packet. <a href="#">Learn more →</a></p></div>
+  </div>
+  <nav class="main-nav"><div class="nav-inner"><button class="nav-btn active" onclick="showSection('deck')" id="nav-deck"><span class="nav-icon">📊</span><span>Overview</span></button><button class="nav-btn" onclick="showSection('output')" id="nav-output"><span class="nav-icon">📋</span><span>Sample Output</span></button><button class="nav-btn" onclick="window.location.href='mailto:hello@truthstack.io?subject=TruthStack%20Pilot%20Interest'"><span class="nav-icon">💬</span><span>Contact</span></button></div></nav>
+  <script>
+    function showSection(sectionId){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById('section-'+sectionId).classList.add('active');document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));var navBtn=document.getElementById('nav-'+sectionId);if(navBtn)navBtn.classList.add('active');window.scrollTo(0,0)}
+    function switchTab(tabId){document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));event.currentTarget.classList.add('active');document.getElementById('tab-'+tabId).classList.add('active')}
+    function toggleCheck(header){var item=header.closest('.check-item, .signal-card');if(item)item.classList.toggle('expanded')}
+    var lastTouchEnd=0;document.addEventListener('touchend',function(e){var now=(new Date).getTime();if(now-lastTouchEnd<=300)e.preventDefault();lastTouchEnd=now},false);
+  </script>
+</body>
+</html>
